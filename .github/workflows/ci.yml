@@ -29,3 +29,6 @@ jobs:
         run: |
           ruff format --check --diff
           ruff check --diff
+      - name: Check typing
+        run: |
+          npx pyright
