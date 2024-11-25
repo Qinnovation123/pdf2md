@@ -3,11 +3,17 @@ name = "pdf2md"
 version = "0"
 requires-python = ">=3.12"
 dependencies = [
+    "pdfminer-six[image]>=20240706",
+    "promplate-recipes~=0.2.3",
+    "promplate-trace[langfuse,langsmith]~=0.3.0.dev5",
+    "promplate[openai]~=0.3.4",
+    "promptools[tokenizer]~=0.1.3.5",
+    "rich~=13.9.4",
     "ruff~=0.8.0",
+    "watchfiles~=0.24.0",
 ]
 
 [tool.ruff]
-preview = true
 line-length = 200
 
 [tool.ruff.lint]
