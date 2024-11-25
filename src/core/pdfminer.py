@@ -1,3 +1,4 @@
+from hashlib import md5
 from io import StringIO
 from pathlib import Path
 
@@ -13,9 +14,16 @@ def extract_text(pdf_path: str):
 
     class OurImageWriter(ImageWriter):
         def _create_unique_image_name(self, image: LTImage, ext: str):
-            filename, path = super()._create_unique_image_name(image, ext)
-            out.write(f" ![]({filename}) ")  # TODO: change this
-            return filename, path
+            sha = md5(image.stream.get_data()).hexdigest()
+            filename = sha[:6] + ext
+            path = Path(self.outdir, filename)
+            while path.exists() and md5(path.read_bytes()).hexdigest() != sha:
+                sha = md5(sha.encode()).hexdigest()
+                filename = sha[:6] + ext
+                path = Path(self.outdir, filename)
+
+            out.write(f" ![](./{filename}) ")
+            return filename, str(path.resolve())
 
     manager = PDFResourceManager()
     device = TextConverter(manager, out, imagewriter=OurImageWriter("."), laparams=LAParams())
