@@ -31,3 +31,4 @@ Provide the complete essay in markdown format without enclosing the output in th
 - No changes to the content itself, only repositioning if necessary.
 - Ensure the final essay is readable and formatted correctly.
 - Convert uppercase titles to sentence case.
+- Don't miss the references section at the end.

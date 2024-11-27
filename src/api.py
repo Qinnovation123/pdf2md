@@ -5,7 +5,7 @@ from .templates import template
 from .utils.llm import complete
 
 
-async def process_pdf(pdf_path: str):
+async def process_pdf(pdf_path):
     text = extract_text(pdf_path)
 
     messages = parse_chat_markup(template.render({"content": text}))
