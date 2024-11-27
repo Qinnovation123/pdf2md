@@ -6,13 +6,12 @@ from rich.console import Console
 from .log import print_token_usage
 from .vision.print import show_prompt
 
-generate = AsyncChatGenerate()
+generate = patch.chat.agenerate(AsyncChatGenerate())
 
 
 console = Console(markup=False)
 
 
-@patch.chat.acomplete
 async def complete(prompt, /, **kwargs):
     show_prompt(ensure(prompt))  # type: ignore
 
