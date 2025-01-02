@@ -41,3 +41,6 @@ extend-select = [
 [tool.m.aliases]
 dev = "uvicorn main:app --reload --host localhost"
 fmt = { cmd = "ruff format && ruff check --fix --show-fixes", shell = true }
+
+[tool.pyright]
+typeCheckingMode = "standard"
