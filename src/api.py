@@ -16,7 +16,7 @@ async def process_pdf(pdf_path, stream: Literal[False]) -> str: ...
 async def process_pdf(pdf_path, stream: Literal[True]) -> AsyncIterable[str]: ...
 
 
-async def process_pdf(pdf_path, stream=False):  # type: ignore
+async def process_pdf(pdf_path, stream=False):
     text = extract_text(pdf_path)
 
     messages = parse_chat_markup(template.render({"content": text}))
