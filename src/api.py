@@ -4,22 +4,22 @@ from typing import Literal, overload
 from pdfminer.high_level import extract_text
 from promplate import parse_chat_markup
 
-from .templates import template
+from .templates import pdf2md
 from .utils.llm import complete, generate
 
 
 @overload
-async def process_pdf(pdf_path) -> str: ...
+async def pdf_to_markdown(pdf_path) -> str: ...
 @overload
-async def process_pdf(pdf_path, stream: Literal[False]) -> str: ...
+async def pdf_to_markdown(pdf_path, stream: Literal[False]) -> str: ...
 @overload
-async def process_pdf(pdf_path, stream: Literal[True]) -> AsyncIterable[str]: ...
+async def pdf_to_markdown(pdf_path, stream: Literal[True]) -> AsyncIterable[str]: ...
 
 
-async def process_pdf(pdf_path, stream=False):
+async def pdf_to_markdown(pdf_path, stream=False):
     text = extract_text(pdf_path)
 
-    messages = parse_chat_markup(template.render({"content": text}))
+    messages = parse_chat_markup(pdf2md.render({"content": text}))
 
     if stream:
         return generate(messages, temperature=0, model="gpt-4o-mini")
