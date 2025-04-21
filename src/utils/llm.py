@@ -48,6 +48,8 @@ async def _debug_complete(prompt, /, **kwargs):
 async def complete(prompt, /, pretty=__debug__, **kwargs):
     show_prompt(ensure(prompt))  # type: ignore
 
+    kwargs |= {"reasoning_effort": "low", "model": "grok-3-mini-beta", "temperature": 0}
+
     if pretty:
         return await _debug_complete(prompt, **kwargs)
 

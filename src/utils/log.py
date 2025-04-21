@@ -24,7 +24,7 @@ def print_token_usage(prompt, completion):
     b = count_token(completion, enc)
     c = a + b
     console.print(
-        f"\n [r] usages [/r] {a} + {b} = {c} [green]$ {(a * 0.15 + b * 0.6) / 1_000} / 1k rounds",
+        f"\n [r] usages [/r] {a} + {b} = {c} [green]$ {(a * 0.3 + b * 0.5) / 1_000} / 1k rounds",
         style="bright_red",
     )
 

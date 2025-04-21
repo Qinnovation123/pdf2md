@@ -44,9 +44,7 @@ async def pdf_to_markdown(pdf_path, stream=False):
 
     messages = parse_chat_markup(pdf2md.render({"content": text}))
 
-    if stream:
-        return generate(messages, temperature=0, model="grok-2-1212")
-    return await complete(messages, temperature=0, model="grok-2-1212")
+    return generate(messages) if stream else await complete(messages)
 
 
 Metadata = TypedDict("Metadata", {"title": str, "abstract": str, "keywords": list[str], "success": Literal[True]}) | TypedDict("Error", {"success": Literal[False]})
@@ -54,9 +52,9 @@ validator = TypeAdapter(Metadata)
 
 
 async def parse_pdf_metadata(pdf_path, max_pages=None):
-    text = extract_text(pdf_path, num_pages=max_pages)
+    text = extract_text(pdf_path, max_pages)
 
     messages = parse_chat_markup(extract.render({"content": text}))
 
-    res = await complete(messages, temperature=0, model="grok-2-1212", response_format={"type": "json_object"})
+    res = await complete(messages, response_format={"type": "json_object"})
     return validator.validate_json(res)
