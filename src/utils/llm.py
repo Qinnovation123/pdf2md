@@ -45,13 +45,23 @@ async def _debug_complete(prompt, /, **kwargs):
     return res
 
 
+path = Path(__file__, "../../../cache/complete").resolve()
+path.mkdir(parents=True, exist_ok=True)
+cache = Cache[bytes, str](path, size_limit=1024**2 * 3)
+
+
 async def complete(prompt, /, pretty=__debug__, **kwargs):
     show_prompt(ensure(prompt))  # type: ignore
+
+    key = md5(encode(ensure(prompt), order="sorted")).digest()
+    if res := cache.get(key):
+        return res
 
     kwargs |= {"reasoning_effort": "low", "model": "grok-3-mini-beta", "temperature": 0}
 
     if pretty:
-        return await _debug_complete(prompt, **kwargs)
+        cache[key] = res = await _debug_complete(prompt, **kwargs)
+        return res
 
     res = ""
     async for i in generate(prompt, **kwargs):
@@ -63,4 +73,5 @@ async def complete(prompt, /, pretty=__debug__, **kwargs):
 
     print_token_usage(prompt, res)
 
+    cache[key] = res
     return res

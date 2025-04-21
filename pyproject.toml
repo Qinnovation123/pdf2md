@@ -3,8 +3,10 @@ name = "pdf2md"
 version = "0"
 requires-python = ">=3.12"
 dependencies = [
+    "diskcache2~=1.0.0",
     "fastapi~=0.115.5",
     "httptools~=0.6.4",
+    "msgspec~=0.19.0",
     "pdfminer-six[image]>=20240706",
     "promplate-recipes~=0.2.3",
     "promplate-trace[langfuse,langsmith]~=0.3.0.dev5",
