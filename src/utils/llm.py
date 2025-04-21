@@ -1,5 +1,9 @@
 from asyncio import Lock
+from hashlib import md5
+from pathlib import Path
 
+from diskcache import Cache
+from msgspec.msgpack import encode
 from promplate.llm.openai import AsyncChatGenerate
 from promplate.prompt.chat import ensure
 from promplate_trace.auto import patch
@@ -57,7 +61,7 @@ async def complete(prompt, /, pretty=__debug__, **kwargs):
     if res := cache.get(key):
         return res
 
-    kwargs |= {"reasoning_effort": "low", "model": "grok-3-mini-beta", "temperature": 0}
+    kwargs |= {"model": "Qwen/Qwen2.5-14B-Instruct", "temperature": 0}
 
     if pretty:
         cache[key] = res = await _debug_complete(prompt, **kwargs)
