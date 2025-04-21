@@ -30,7 +30,7 @@ async def _debug_complete(prompt, /, **kwargs):
     if is_json := kwargs.get("response_format", {}).get("type", "text") != "text":
         from rich.json import JSON as Render  # noqa: N811
     else:
-        from rich.markdown import Markdown as Render
+        from .rich_markdown import Markdown as Render
 
     async with lock:
         with Live(vertical_overflow="visible") as live:
