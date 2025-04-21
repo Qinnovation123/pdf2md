@@ -30,9 +30,9 @@ async def convert_pdf_to_markdown(pdf: bytes = Body(media_type="application/pdf"
 
 
 @app.post("/extract", response_model=Metadata)
-async def parse_metadata_from_pdf(pdf: bytes = Body(media_type="application/pdf"), num_pages: int = 3):
+async def parse_metadata_from_pdf(pdf: bytes = Body(media_type="application/pdf"), max_pages: int = 6, max_tokens: int = 3500):
     try:
-        return await parse_pdf_metadata(BytesIO(pdf), max_pages=num_pages)
+        return await parse_pdf_metadata(BytesIO(pdf), max_pages, max_tokens)
     except Exception as e:
         console.print("\n" + indent(format_exc().strip(), " ") + "\n", style="red")
         raise HTTPException(status_code=500, detail=str(e)) from e

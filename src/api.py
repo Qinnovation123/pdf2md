@@ -51,8 +51,13 @@ Metadata = TypedDict("Metadata", {"title": str, "abstract": str, "keywords": lis
 validator = TypeAdapter(Metadata)
 
 
-async def parse_pdf_metadata(pdf_path, max_pages=None):
+async def parse_pdf_metadata(pdf_path, max_pages=None, max_tokens=None):
     text = extract_text(pdf_path, max_pages)
+
+    if max_tokens:
+        from .utils.token_limit import limit_tokens
+
+        text = limit_tokens(text, max_tokens)
 
     messages = parse_chat_markup(extract.render({"content": text}))
 
