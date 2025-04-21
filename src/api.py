@@ -1,12 +1,34 @@
 from collections.abc import AsyncIterable
-from typing import Literal, TypedDict, overload
+from io import BytesIO
+from typing import Literal, TypedDict, assert_never, overload
 
-from pdfminer.high_level import extract_text
 from promplate import parse_chat_markup
 from pydantic import TypeAdapter
 
 from .templates import extract, pdf2md
 from .utils.llm import complete, generate
+
+type Engine = Literal["pdfminer", "pymupdf", "auto"]
+
+
+def extract_text(pdf_path: BytesIO, /, engine: Engine = "auto"):
+    match engine:
+        case "pdfminer":
+            from pdfminer.high_level import extract_text as extract
+
+            return extract(pdf_path)
+        case "pymupdf":
+            from pymupdf import Document
+
+            doc = Document(stream=pdf_path, filetype="pdf")
+            return "\n\n".join(page.get_textpage().extractText() for page in doc)
+        case "auto":
+            try:
+                return extract_text(pdf_path, "pymupdf")
+            except Exception:
+                return extract_text(pdf_path, "pdfminer")
+        case _ as never:
+            assert_never(never)
 
 
 @overload
