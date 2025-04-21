@@ -11,22 +11,22 @@ from .utils.llm import complete, generate
 type Engine = Literal["pdfminer", "pymupdf", "auto"]
 
 
-def extract_text(pdf_path: BytesIO, /, engine: Engine = "auto"):
+def extract_text(pdf_path: BytesIO, /, max_pages: int | None = None, engine: Engine = "auto"):
     match engine:
         case "pdfminer":
             from pdfminer.high_level import extract_text as extract
 
-            return extract(pdf_path)
+            return extract(pdf_path, maxpages=max_pages or 0)
         case "pymupdf":
             from pymupdf import Document
 
             doc = Document(stream=pdf_path, filetype="pdf")
-            return "\n\n".join(page.get_textpage().extractText() for page in doc)
+            return "\n\n".join(page.get_textpage().extractText() for page in doc[:max_pages])
         case "auto":
             try:
-                return extract_text(pdf_path, "pymupdf")
+                return extract_text(pdf_path, max_pages, "pymupdf")
             except Exception:
-                return extract_text(pdf_path, "pdfminer")
+                return extract_text(pdf_path, max_pages, "pdfminer")
         case _ as never:
             assert_never(never)
 
@@ -53,8 +53,8 @@ Metadata = TypedDict("Metadata", {"title": str, "abstract": str, "keywords": lis
 validator = TypeAdapter(Metadata)
 
 
-async def parse_pdf_metadata(pdf_path):
-    text = extract_text(pdf_path)
+async def parse_pdf_metadata(pdf_path, max_pages=None):
+    text = extract_text(pdf_path, num_pages=max_pages)
 
     messages = parse_chat_markup(extract.render({"content": text}))
 
