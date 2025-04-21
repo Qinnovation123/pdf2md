@@ -13,6 +13,7 @@ dependencies = [
     "rich~=14.0.0",
     "ruff~=0.11.0",
     "uvicorn~=0.34.0",
+    "uvicorn-hmr[all]~=0.0.6.1",
     "watchfiles~=1.0.0",
 ]
 
@@ -39,7 +40,7 @@ extend-select = [
 ]
 
 [tool.m.aliases]
-dev = "uvicorn main:app --reload --host localhost"
+dev = "uvicorn-hmr --reload"
 fmt = { cmd = "ruff format && ruff check --fix --show-fixes", shell = true }
 
 [tool.pyright]
