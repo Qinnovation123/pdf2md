@@ -43,7 +43,6 @@ async def _debug_complete(prompt, /, **kwargs):
                     res += i
                     live.update(Render(fix_json(res) if is_json else res), refresh=True)
 
-        print()
         print_token_usage(prompt, res)
 
     return res
