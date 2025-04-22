@@ -1,3 +1,4 @@
+from asyncio import to_thread
 from collections.abc import AsyncIterable
 from io import BytesIO
 from typing import Literal, TypedDict, assert_never, overload
@@ -40,7 +41,7 @@ async def pdf_to_markdown(pdf_path, stream: Literal[True]) -> AsyncIterable[str]
 
 
 async def pdf_to_markdown(pdf_path, stream=False):
-    text = extract_text(pdf_path)
+    text = await to_thread(extract_text, pdf_path)
 
     messages = parse_chat_markup(pdf2md.render({"content": text}))
 
@@ -52,7 +53,7 @@ validator = TypeAdapter(Metadata)
 
 
 async def parse_pdf_metadata(pdf_path, max_pages=None, max_tokens=None):
-    text = extract_text(pdf_path, max_pages)
+    text = await to_thread(extract_text, pdf_path, max_pages)
 
     if max_tokens:
         from .utils.token_limit import limit_tokens
