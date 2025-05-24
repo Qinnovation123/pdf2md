@@ -38,11 +38,21 @@ async def pdf_to_markdown(pdf_path) -> str: ...
 async def pdf_to_markdown(pdf_path, stream: Literal[False]) -> str: ...
 @overload
 async def pdf_to_markdown(pdf_path, stream: Literal[True]) -> AsyncIterable[str]: ...
+@overload
+async def text_to_markdown(text: str) -> str: ...
+@overload
+async def text_to_markdown(text: str, stream: Literal[False]) -> str: ...
+@overload
+async def text_to_markdown(text: str, stream: Literal[True]) -> AsyncIterable[str]: ...
 
 
 async def pdf_to_markdown(pdf_path, stream=False):
     text = await to_thread(extract_text, pdf_path)
 
+    return await text_to_markdown(text, stream)
+
+
+async def text_to_markdown(text: str, stream=False):
     messages = parse_chat_markup(pdf2md.render({"content": text}))
 
     return generate(messages) if stream else await complete(messages)
