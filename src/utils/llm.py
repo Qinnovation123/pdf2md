@@ -1,4 +1,5 @@
 from asyncio import Lock
+from functools import partial
 from hashlib import md5
 from pathlib import Path
 
@@ -12,7 +13,7 @@ from rich.console import Console
 from .log import print_token_usage
 from .vision.print import show_prompt
 
-generate = patch.chat.agenerate(AsyncChatGenerate())
+generate = partial(patch.chat.agenerate(AsyncChatGenerate()), model="Qwen/Qwen2.5-14B-Instruct", temperature=0)
 
 
 console = Console(markup=False)
@@ -59,8 +60,6 @@ async def complete(prompt, /, pretty=__debug__, **kwargs):
     key = md5(encode(ensure(prompt), order="sorted")).digest()
     if res := cache.get(key):
         return res
-
-    kwargs |= {"model": "Qwen/Qwen2.5-14B-Instruct", "temperature": 0}
 
     if pretty:
         cache[key] = res = await _debug_complete(prompt, **kwargs)
