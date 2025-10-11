@@ -43,7 +43,7 @@ extend-select = [
 ]
 
 [tool.m.aliases]
-dev = "uvicorn-hmr --reload"
+dev = "uvicorn-hmr --refresh"
 fmt = { cmd = "ruff format && ruff check --fix --show-fixes", shell = true }
 
 [tool.pyright]
